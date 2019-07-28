@@ -4,28 +4,6 @@ namespace TaylorSeries
 {
     public static class Trigonometric
     {
-        private static double[] S;
-
-        private static bool _initialized = false;
-
-        /// <summary>
-        /// 이 함수는 Trigonometric의 다른 함수들이 실행되기 전 반드시 실행되어야 합니다.
-        /// </summary>
-        /// <param name="n">테일러 함수를 어디까지 계산할 것인가. <see cref="n"/>이 클수록 정확함</param>
-        public static void Initialize(int n)
-        {
-            S = new double[n];
-            S[0] = 1;
-            for (int i = 1; i < S.Length; ++i)
-                S[i] = S[i - 1] / i;
-        }
-
-        private static bool CheckInit()
-        {
-            if (!_initialized) Console.WriteLine("Trigonometric.Initialize(int)가 먼저 실행되어야 합니다!");
-            return _initialized;
-        }
-
         private static double DivRem(double x, double div)
         {
             if (div == 0) return Double.NaN;
@@ -36,7 +14,6 @@ namespace TaylorSeries
 
         public static double Sin(double x)
         {
-            if (!CheckInit()) return Double.NaN;
             x = DivRem(x, 2 * Math.PI);
             if (x >= Math.PI * 0.5 && x < Math.PI * 1.5) x = Math.PI - x;
             else if (x >= Math.PI * 1.5 && x < Math.PI * 2) x -= Math.PI * 2;
@@ -55,7 +32,6 @@ namespace TaylorSeries
 
         public static double SlowSin(double x)
         {
-            if (!CheckInit()) return Double.NaN;
             x = DivRem(x, 2 * Math.PI);
             if (x >= Math.PI * 0.5 && x < Math.PI * 1.5) x = Math.PI - x;
             else if (x >= Math.PI * 1.5 && x < Math.PI * 2) x -= Math.PI * 2;
@@ -69,10 +45,10 @@ namespace TaylorSeries
             double res = 0;
             double r = (x + Math.PI * 0.5) * (x + Math.PI * 0.5);
             double cur = 1;
-            for (int i = 0; i < S.Length; i += 2)
+            for (int i = 0; i <= Factorial.Expanded; i += 2)
             {
                 if (i != 0) cur *= r;
-                res += (i % 4 == 0 ? -1 : 1) * cur * S[i];
+                res += (i % 4 == 0 ? -1 : 1) * cur * Factorial.Get(i);
             }
             return res;
         }
@@ -82,10 +58,10 @@ namespace TaylorSeries
             double res = 0;
             double r = x * x;
             double cur = x;
-            for (int i = 1; i < S.Length; i += 2)
+            for (int i = 1; i <= Factorial.Expanded; i += 2)
             {
                 if (i != 1) cur *= r;
-                res += ((i - 1) % 4 == 0 ? 1 : -1) * cur * S[i];
+                res += ((i - 1) % 4 == 0 ? 1 : -1) * cur * Factorial.Get(i);
             }
             return res;
         }
@@ -95,10 +71,10 @@ namespace TaylorSeries
             double res = 0;
             double r = (x - Math.PI * 0.5) * (x - Math.PI * 0.5);
             double cur = 1;
-            for (int i = 0; i < S.Length; i += 2)
+            for (int i = 0; i <= Factorial.Expanded; i += 2)
             {
                 if (i != 0) cur *= r;
-                res += (i % 4 == 0 ? 1 : -1) * cur * S[i];
+                res += (i % 4 == 0 ? 1 : -1) * cur * Factorial.Get(i);
             }
             return res;
         }
